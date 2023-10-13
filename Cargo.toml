@@ -10,3 +10,7 @@ clap = { version = "4.3.0", features = ["derive"] }
 regex = "1.8.3"
 
 [dev-dependencies]
+
+[profile.release]
+strip = true  # Automatically strip symbols from the binary.
+lto = true  # Enable link-time optimization.
