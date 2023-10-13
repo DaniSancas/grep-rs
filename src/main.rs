@@ -68,3 +68,45 @@ where
     let file = File::open(filename).expect("Failed to read input file");
     io::BufReader::new(file).lines()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_match_pattern() {
+        let regex = Regex::new("pattern").unwrap();
+        let line = "This is a pattern";
+        let expected = Some("This is a \x1b[31mpattern\x1b[0m".to_string());
+        let result = match_pattern(&regex, &line);
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_match_pattern_no_match() {
+        let regex = Regex::new("pattern").unwrap();
+        let line = "This is not a match";
+        let expected = None;
+        let result = match_pattern(&regex, &line);
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_match_pattern_multiple_matches() {
+        let regex = Regex::new("pattern").unwrap();
+        let line = "This is a pattern and another pattern";
+        let expected =
+            Some("This is a \x1b[31mpattern\x1b[0m and another \x1b[31mpattern\x1b[0m".to_string());
+        let result = match_pattern(&regex, &line);
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_match_pattern_multiple_matches_same_word() {
+        let regex = Regex::new("pattern").unwrap();
+        let line = "This is a patternpattern";
+        let expected = Some("This is a \x1b[31mpattern\x1b[0m\x1b[31mpattern\x1b[0m".to_string());
+        let result = match_pattern(&regex, &line);
+        assert_eq!(result, expected);
+    }
+}

@@ -26,7 +26,6 @@ grep-rs -i "inline text" "string or regex pattern"
 ```
 
 # TODO
-- [ ] Add tests
 - [ ] Add examples to the docs
 - [ ] Add `-d` option to search recursively in a directory
 - [ ] Add flag for case-insensitive search
