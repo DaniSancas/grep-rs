@@ -25,11 +25,15 @@ grep-rs -f path/to/file "string or regex pattern"
 grep-rs -i "inline text" "string or regex pattern" 
 ```
 
+### Search for a string on a piped input
+```bash
+echo "piped text" | grep-rs "string or regex pattern" 
+```
+
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
 # TODO
 - [ ] Add examples to the docs
 - [ ] Add `-d` option to search recursively in a directory
 - [ ] Add flag for case-insensitive search
-- [ ] Allow to pipe input from `stdin`
-
-# License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

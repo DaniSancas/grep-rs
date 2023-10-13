@@ -26,20 +26,27 @@ fn main() {
 
     if let Some(input_text) = matches.input.as_deref() {
         let lines = input_text.lines();
-        for line in lines {
-            if let Some(coincidence) = match_pattern(&regex, line) {
-                println!("{coincidence}");
-            }
-        }
+        match_over_line_iterator(lines, &regex);
     } else if let Some(file_path) = matches.file.as_deref() {
-        let lines = read_lines(file_path);
-        for line in lines.flatten() {
-            if let Some(coincidence) = match_pattern(&regex, &line) {
-                println!("{coincidence}");
-            }
-        }
+        let lines = read_lines(file_path).flatten();
+        match_over_line_iterator(lines, &regex);
     } else {
-        eprintln!("You must provide an input text or a file. Type --help for more info.");
+        let lines = io::stdin().lock().lines().flatten();
+        match_over_line_iterator(lines, &regex);
+    }
+}
+
+/// Function which takes an iterator of String or &str and prints each line
+/// that matches the given regex.
+fn match_over_line_iterator<T, S>(lines: T, regex: &Regex)
+where
+    T: Iterator<Item = S>,
+    S: AsRef<str>,
+{
+    for line in lines {
+        if let Some(coincidence) = match_pattern(regex, line.as_ref()) {
+            println!("{coincidence}");
+        }
     }
 }
 
