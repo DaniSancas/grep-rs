@@ -23,16 +23,20 @@ struct Args {
 fn main() {
     let matches = Args::parse();
     let regex = Regex::new(&matches.pattern).expect("Invalid pattern or regular expression");
+    let lines = get_lines_from_input(&matches);
+    match_over_line_iterator(lines, &regex);
+}
 
-    if let Some(input_text) = matches.input.as_deref() {
-        let lines = input_text.lines();
-        match_over_line_iterator(lines, &regex);
-    } else if let Some(file_path) = matches.file.as_deref() {
-        let lines = read_lines(file_path).flatten();
-        match_over_line_iterator(lines, &regex);
-    } else {
-        let lines = io::stdin().lock().lines().flatten();
-        match_over_line_iterator(lines, &regex);
+/// Function to get an iterator over the lines of the input.
+/// The input can be a string, a file or stdin.
+fn get_lines_from_input(matches: &Args) -> Box<dyn Iterator<Item = String> + '_> {
+    match (matches.input.as_deref(), matches.file.as_deref()) {
+        (Some(input_text), None) => {
+            Box::new(input_text.lines().map(std::string::ToString::to_string))
+        }
+        (None, Some(file_path)) => Box::new(read_lines(file_path).flatten()),
+        (None, None) => Box::new(io::stdin().lock().lines().flatten()),
+        _ => panic!("Cannot use both input and file"),
     }
 }
 
